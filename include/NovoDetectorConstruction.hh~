@@ -1,0 +1,67 @@
+/*
+ * G4Rangeverifcation: 
+ * Defining the detector geometry, and experimental setup
+ * Header file
+ * Author: Kyrre Skjerdal (kyrre.skjerdal@hvl.no)
+ */
+ 
+
+/// \file RangeverificationDetectorConstruction.hh
+/// \brief Definition of the RangeverificationDetectorConstruction class
+
+#ifndef RangeverificationDetectorConstruction_h
+#define RangeverificationDetectorConstruction_h 1
+
+
+#include "G4VUserDetectorConstruction.hh"
+#include "globals.hh"
+
+
+
+class G4VPhysicalVolume;
+class G4LogicalVolume;
+class G4Box;
+
+class RangeverificationDetectorConstruction : public G4VUserDetectorConstruction
+{
+	public:
+		RangeverificationDetectorConstruction();
+		virtual ~RangeverificationDetectorConstruction();
+		
+		// Function where the experimental setup is constructed
+		virtual G4VPhysicalVolume* Construct();
+		
+		// Get the physical volumes
+		G4VPhysicalVolume* GetWorld() const { return fPhysWorld; }
+		G4VPhysicalVolume* GetPhantom() const { return fPhysPhantom; }
+		G4VPhysicalVolume* GetConverter() const { return fPhysConverter; }
+		G4VPhysicalVolume* GetDetector1() const { return fPhysDet1; }
+		G4VPhysicalVolume* GetDetector2() const { return fPhysDet2; }
+		// Get the logical volume of the scoring volume (water phantom)
+		G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
+		
+	protected:
+		G4LogicalVolume*  fScoringVolume;
+	private:
+		G4Box* fSolidWorld;
+		G4LogicalVolume* fLogicWorld;
+		G4VPhysicalVolume* fPhysWorld;
+		
+		G4Box* fSolidPhantom;
+		G4LogicalVolume* fLogicPhantom;
+		G4VPhysicalVolume* fPhysPhantom;
+		
+		G4Box* fSolidConverter;
+		G4LogicalVolume* fLogicConverter;
+		G4VPhysicalVolume* fPhysConverter;
+		
+		G4Box* fSolidDet1;
+		G4Box* fSolidDet2;
+		G4LogicalVolume* fLogicDetector1;
+		G4LogicalVolume* fLogicDetector2;
+		G4VPhysicalVolume* fPhysDet1;
+		G4VPhysicalVolume* fPhysDet2;
+};
+
+#endif
+

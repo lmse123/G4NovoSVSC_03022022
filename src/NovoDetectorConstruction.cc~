@@ -1,0 +1,226 @@
+/*
+ * G4Rangeverifcation: 
+ * Defining the detector
+ * Source file
+ * Author: Kyrre Skjerdal (kyrre.skjerdal@hvl.no)
+ */
+
+/// \file RangeverificationDetectorConstruction.hh
+/// \brief Implementation of the RangeverificationDetectorConstruction class
+
+#include "RangeverificationDetectorConstruction.hh"
+#include "RangeverificationTracker.hh"
+
+#include "G4RunManager.hh"
+#include "G4NistManager.hh"
+#include "G4Box.hh"
+#include "G4LogicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4SystemOfUnits.hh"
+#include "G4PhysicalConstants.hh"
+#include "G4SDManager.hh"
+
+
+
+RangeverificationDetectorConstruction::RangeverificationDetectorConstruction()
+:	G4VUserDetectorConstruction(),
+	fScoringVolume(0)
+{ }
+
+
+RangeverificationDetectorConstruction::~RangeverificationDetectorConstruction()
+{ }
+
+G4VPhysicalVolume* RangeverificationDetectorConstruction::Construct()
+{
+	
+	// Get nist material manager
+	G4NistManager* nist = G4NistManager::Instance();
+  
+	// Option to switch on/off checking of volumes overlaps
+	//
+	G4bool checkOverlaps = true;
+	
+	// Defining "vacuum" (material with galactic density)
+	G4double z;  // z=mean number of protons;  
+	G4double a;
+	G4double density;
+	G4double fractionmass;
+	G4double nel;
+	G4Material* galactic = new G4Material("Galactic", z=1., a=1.01*g/mole, density = universe_mean_density,
+                  kStateGas, 2.73*kelvin, 3.e-18*pascal);
+                  
+    
+    //Defining EJ309 material
+                  
+	G4Element* elH  = new G4Element("Hydrogen","H",  z=1.,  a=1.00794*g/mole);
+	G4Element* elC  = new G4Element("Carbon",  "C",  z=6.,  a= 12.011 *g/mole);
+	
+	density = 0.959*g/cm3;
+	G4Material* ej309 = new G4Material("EJ309", density, nel=2);
+	ej309->AddElement(elH, fractionmass = 0.095);
+	ej309->AddElement(elC, fractionmass = 0.905);
+
+  
+    /*
+	* Defining the world of the experiment. A box of 0.5*0.5*0.5 m^3
+	*/
+	
+	//Size of the world in x, y and z
+	G4double worldX = 0.5*m;
+	G4double worldY = 0.5*m;
+	G4double worldZ = 0.5*m;
+	
+	// Defining the material of the world. 
+	//G4Material* worldMat = nist->FindOrBuildMaterial("G4_AIR");
+	G4Material* worldMat = galactic;
+	// World solid. Defining the shape (Box)
+	fSolidWorld = new G4Box("WorldSV", 	// The name
+		worldX/2, 						// Half length, x
+		worldY/2,  						// Half length, y
+		worldZ/2); 						// Half length, z
+  
+	// World logical volume:
+	fLogicWorld = 
+		new G4LogicalVolume(fSolidWorld,	// Its solid 
+		worldMat,  							// Its material
+		"WorldLV"); 						// Its name
+  
+	// World physical volume 
+	fPhysWorld = 
+		new G4PVPlacement(0,	// No rotation
+		G4ThreeVector(), 		// Placement (0,0,0)
+		fLogicWorld, 			// Its logical volume
+		"WorldPV", 				// Its name
+		0,						// Its mother volume  		
+		false, 					// No boolean operation
+		0, 						// Copy number
+		checkOverlaps);			// Overlaps checking
+		
+		
+	/*
+	 * Phantom
+	 */	
+		
+	// Phantom dimensions:
+	G4double phX = 35.0*cm;
+	G4double phY = 10.0*cm;
+	G4double phZ = 10.0*cm;
+	
+	// Phantom material (Water):
+	G4Material* phMat = nist->FindOrBuildMaterial("G4_WATER");
+	
+	// Phantom solid, defining the shape as a box:
+	fSolidPhantom = new G4Box("PhantomSV", phX/2, phY/2, phZ/2);
+	
+	// Phantom logical volume:
+	fLogicPhantom = 
+		new G4LogicalVolume(fSolidPhantom,	// Its solid
+		phMat, 								// Its material
+		"PhantomLV");						// Its name
+	
+	// Phantom physical volume, defining placement and rotation:	
+	fPhysPhantom = 
+		new G4PVPlacement(0,	// No rotatin
+		G4ThreeVector(),		// Placement in (0,0,0)		
+		fLogicPhantom, 			// Its logical volume
+		"PhantomPV", 			// Its name
+		fLogicWorld, 			// Mother volume
+		false, 					// No boolean operation	
+		0);						// Copy number
+	
+	/*
+	 * Converter
+	 */	
+	
+	// Converter dimensions:
+	G4double converterX = 20.0*cm;
+	G4double converterY = 20.0*cm;
+	G4double converterZ = 0.50*cm;
+	
+	
+	
+	// Converter placement:
+	//G4double converterPosX = 0.25*cm; // 160 MeV 
+	G4double converterPosX = 8.4*cm; // 200 MeV 
+	//G4double converterPosX = 15.7*cm; // 230 MeV 
+	G4double converterPosY = 0.0*cm;
+	G4double converterPosZ = 10.0*cm;
+	// Vector defining the position of the converter:
+	G4ThreeVector converterPos = G4ThreeVector(converterPosX, converterPosY, converterPosZ);
+	
+	// Converter material:
+	G4Material* converterMat = ej309;
+	
+	// Converter solid:
+	fSolidConverter = new G4Box("ConverterSV", converterX/2, converterY/2, converterZ/2);
+	
+	// Converter logical volume:
+	fLogicConverter = new G4LogicalVolume(fSolidConverter, converterMat, "ConverterLV");
+	
+	// Converter physical volume:
+	fPhysConverter = 
+		new G4PVPlacement(0, 	// No rotation
+		converterPos, 			// Placed in (0,0,10) [cm]
+		fLogicConverter, 		// Its logical volume
+		"ConverterPV", 			// Its name
+		fLogicWorld, 			// Mother volume	
+		false, 					// No boolean operation	
+		0);						// Copy number
+		
+	/*
+	 *  Detector
+	*/
+	
+	// Detector dimensions:
+	G4double detectorX = 20.0*cm;
+	G4double detectorY = 20.0*cm;
+	G4double detectorZ = 0.1*cm;
+	
+	// Detector planes placement:
+	G4double detectorPosX = converterPosX;
+	G4double detectorPosY = converterPosY;
+	
+	// Detector 1 placement: Bottom of the detector should be 0.5 cm above the top of the converter
+	G4double detector1PosZ = converterPosZ + converterZ/2 + detectorZ/2 + 0.5*cm;
+	// Detector 2 placement: Bottom of detector 2 should be 2.0 cm above the top of detector 1. 
+	G4double detector2PosZ = detector1PosZ + detectorZ + 2.0*cm;
+	//Vector defining the position of the detectors: 
+	G4ThreeVector detector1Pos = G4ThreeVector(detectorPosX, detectorPosY, detector1PosZ);
+	G4ThreeVector detector2Pos = G4ThreeVector(detectorPosX, detectorPosY, detector2PosZ);
+	
+	// Detector material:
+	//G4Material* detectorMat = nist->FindOrBuildMaterial("G4_SILICON_DIOXIDE");
+	G4Material* detectorMat = galactic;
+	
+	// Detector planes solids:
+	fSolidDet1  = new G4Box("Detector1", detectorX/2, detectorY/2, detectorZ/2);
+	fSolidDet2  = new G4Box("Detector2", detectorX/2, detectorY/2, detectorZ/2);	
+	
+	// Detector logic volumes: 
+	fLogicDetector1 = new G4LogicalVolume(fSolidDet1, detectorMat, "Detector1");
+	fLogicDetector2 = new G4LogicalVolume(fSolidDet1, detectorMat, "Detector2");
+	
+	// Detector physical volumes:
+	fPhysDet1 = 
+		new G4PVPlacement(0, detector1Pos, fLogicDetector1, "Detector1", fLogicWorld, false, 0);
+	fPhysDet2 = 
+		new G4PVPlacement(0, detector2Pos, fLogicDetector2, "Detector2", fLogicWorld, false, 0);
+		
+	// Defining a sensitive detector recording hits:
+	G4VSensitiveDetector* sensitiveDetector1 = new RangeverificationTracker("SensitiveDetector1");
+	//G4VSensitiveDetector* sensitiveDetector2 = new RangeverificationTracker("SensitiveDetector2");
+	G4SDManager::GetSDMpointer()->AddNewDetector(sensitiveDetector1);
+	//G4SDManager::GetSDMpointer()->AddNewDetector(sensitiveDetector2);
+	
+	// Setting the logical volumes of the detector planes as sensitive detectors:
+	fLogicDetector1->SetSensitiveDetector(sensitiveDetector1);
+	fLogicDetector2->SetSensitiveDetector(sensitiveDetector1);
+
+	
+	// Setting the logical volume of the water phantom as scoring volume: 
+	fScoringVolume = fLogicPhantom;
+	
+	return fPhysWorld;
+  
+}
