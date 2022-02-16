@@ -102,6 +102,10 @@ NovoRunAction::NovoRunAction(NovoDetectorConstruction* det, NovoEventAction* ev)
 	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "BSGatingEDep"); // 3
 	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "Scint_isPrimary"); // 4
 	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "BSGating_isPrimary"); // 5
+	//TODO:
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosXs",fEventAction->GetScintHitPosXs()); // 6
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosYs",fEventAction->GetScintHitPosYs()); // 7
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosZs",fEventAction->GetScintHitPosZs()); // b
 	analysisManager->FinishNtuple(n_BSGating_tupleNo); //?
 }
 

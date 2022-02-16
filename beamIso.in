@@ -7,7 +7,7 @@
 /run/initialize
 # Source
 /gps/pos/type Point
-/gps/pos/centre 1+5.0 0.0 0.0 mm # on detector surface, between detector and bar.
+/gps/pos/centre 10.0 0.0 0.0 mm # on detector surface, between detector and bar. OBS! dist+5mm
 /gps/particle gamma
 /gps/number 1 # number of particles per event
 
@@ -32,4 +32,4 @@
 /tracking/verbose 0
 
 #Start the run with the specified number of events:
-/run/beamOn 100000000 #10^8
+/run/beamOn 1000000 #10^8

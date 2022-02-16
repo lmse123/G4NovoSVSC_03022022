@@ -48,7 +48,10 @@ NovoEventAction::NovoEventAction(NovoDetectorConstruction* det)
 	fTimestampsP(0),
 	fForcedrawphotons(false),
 	fForcenophotons(false),
-	fDetector(det)
+	fDetector(det),
+	fScintHitPosXs(0), //set to 0?
+	fScintHitPosYs(0), //set to 0?
+	fScintHitPosZs(0) //set to 0?
 	//fRunAction(runAction)
 {
 }
@@ -63,6 +66,9 @@ void NovoEventAction::BeginOfEventAction(const G4Event* anEvent)
 	G4EventManager::
     GetEventManager()->SetUserInformation(new NovoUserEventInformation);
 
+	fScintHitPosXs.clear();
+	fScintHitPosYs.clear();
+	fScintHitPosZs.clear();
 	fTimestampsN.clear();
 	fTimestampsP.clear();
   fVerbose = 0;
@@ -156,31 +162,41 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 		G4double BSGatingEDep = 0; // tot energy dep in BS detector
 		G4double edep = 0;
 		G4bool p = 0;
-		// Calculate total edep in BS gating detector
-		for(int i=0;i<n_BSGatingHit;i++){ //gather info on hits in scintillator
+
+		int BSGating_isPrimary = 0;
+		for(int i=0;i<n_BSGatingHit;i++){ //gather info on hits in CeBr3
+			// Calculate total edep in BS gating detector
 			edep=(*bsHC)[i]->GetEdep();
 			p=(*bsHC)[i]->GetIsPrimary();
 			BSGatingEDep = BSGatingEDep+edep;
 			//G4cout << "i: "<<i<<" ; isP: "<< p<<" ;edep: "<< BSGatingEDep << G4endl;
-		}
-		//count number of primaries in scint collection
-		int Scint_isPrimary = 0;
-		for (int i = 0; i < n_scintHit; i++){
-			NovoScintHit * scintHit = static_cast<NovoScintHit*>(scintHC->GetHit(i));
-			//G4cout<< scintHit->GetIsPrimary()<<G4endl;
-			if (scintHit->GetIsPrimary()== true) Scint_isPrimary++;
-		}
 
-		//count number of primaries in BS Gating collection
-		int BSGating_isPrimary = 0;
-		for (int i = 0; i < n_BSGatingHit; i++){
 			NovoBSGatingHit * BSGatingHit = static_cast<NovoBSGatingHit*>(bsHC->GetHit(i));
 			//G4cout<< BSGatingHit->GetIsPrimary()<<G4endl;
-			if (BSGatingHit->GetIsPrimary()== true) BSGating_isPrimary++;
+			if (BSGatingHit->GetIsPrimary()== true) BSGating_isPrimary++; //count primaries in BS Gating collection
 		}
-		if(n_BSGatingHit>0) G4cout << "gating hits: " <<n_BSGatingHit<< "," <<n_scintHit<<G4endl;
-		G4cout << "primary Scint hits: "<<Scint_isPrimary << G4endl;
-		G4cout << "primary BS hits: "<<BSGating_isPrimary << G4endl;
+
+		int Scint_isPrimary = 0;
+		//std::vector<G4ThreeVector> test;
+		//G4ThreeVector hitPos; // hit coordinate vector
+		for (int i = 0; i < n_scintHit; i++){
+
+			NovoScintHit * scintHit = static_cast<NovoScintHit*>(scintHC->GetHit(i));
+			G4double hitPosX=(*scintHC)[i]->GetPos().x();
+			G4double hitPosY=(*scintHC)[i]->GetPos().y();
+			G4double hitPosZ=(*scintHC)[i]->GetPos().z();
+			fScintHitPosXs.push_back(hitPosX);
+			fScintHitPosYs.push_back(hitPosY);
+			fScintHitPosZs.push_back(hitPosZ);
+
+			G4cout<< fScintHitPosXs[i]<<":"<< fScintHitPosYs[i]<<":"<< fScintHitPosZs[i]<<":" <<G4endl;
+			//G4cout<< scintHit->GetIsPrimary()<<G4endl;
+			if (scintHit->GetIsPrimary()== true) Scint_isPrimary++; //count primaries in scint collection
+		}
+
+		//if(n_BSGatingHit>0) G4cout << "gating hits: " <<n_BSGatingHit<< "," <<n_scintHit<<G4endl;
+		//G4cout << "primary Scint hits: "<<Scint_isPrimary << G4endl;
+		//G4cout << "primary BS hits: "<<BSGating_isPrimary << G4endl;
 
 		G4int n_BSGating_tupleNo = 1; // <-- TODO: update if scint ntuples >1.
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,0,n_scintHit);
@@ -189,6 +205,7 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,3,BSGatingEDep);
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,4,Scint_isPrimary);
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,5,BSGating_isPrimary);
+		// TODO: scint position. No this is already stored
 		analysisManager->AddNtupleRow(n_BSGating_tupleNo);
 	}
 

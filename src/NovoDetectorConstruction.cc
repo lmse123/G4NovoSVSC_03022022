@@ -296,7 +296,7 @@ G4VPhysicalVolume* NovoDetectorConstruction::ConstructDetector()
   G4double BS_hz = 25.4*mm;
   G4double BS_startAgnle = 0.*deg;
   G4double BS_spanningAngle = 360.*deg;
-  G4double BS_dist_to_bar = 10*mm;
+  G4double BS_dist_to_bar = 5*mm;
   G4double BS_xpos = fScint_x/2+BS_dist_to_bar+BS_hz/2;
   G4double BS_rotation = 90*deg;
     G4RotationMatrix* rotationMatrix = new G4RotationMatrix();
