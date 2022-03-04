@@ -59,7 +59,7 @@ int main(int argc,char** argv)
 	opticalPhysics->SetFiniteRiseTime(true);
 	//~ opticalPhysics->GetScintillationProcess()->SetScintillationByParticleType(false);
 	//~ opticalPhysics->SetScintillationByParticleType(false);
-	//physicsList->RegisterPhysics(opticalPhysics); // test to fix energy spect.
+	physicsList->RegisterPhysics(opticalPhysics); // test to fix energy spect.
 
 	physicsList->SetVerboseLevel(0);
 	runManager->SetUserInitialization(physicsList);

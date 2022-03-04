@@ -191,7 +191,7 @@ void NovoDetectorConstruction::DefineMaterials()
   G4double abslengthej276 = 100.*cm;
   G4double scintABSLEJ276[]  = {abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276, abslengthej276}; //Absorbtion length
   assert(sizeof(scintABSLEJ276) == sizeof(scintEnergyEJ276));
-  G4double photonyield = 8600.;
+  G4double photonyield = 8600.; // /1MeVe^-
   G4double pYIELDEJ276[] = {photonyield*0.1, photonyield*1.0, photonyield*100.};
   //~ G4double pYIELDEJ276[] = {700, 7000., 700000.};
   assert(sizeof(pYIELDEJ276) == sizeof(pEnergy));
@@ -321,8 +321,8 @@ G4VPhysicalVolume* NovoDetectorConstruction::ConstructDetector()
   G4double ypos = -((double)(fNScintY/2.) - (fScint_y/2.)/cm)*cm;
   G4double zpos = 0.0*cm;
   G4double photocat_z = 0.0;
-  int copyNo = 0;
-  int copyPC = 0;
+  int copyNo = 0; // scintillator number
+  int copyPC = 0; // photocathode number
   for(auto i = 0; i < fNScintY; i++){
     for(auto j = 0; j < fNScintX; j++){
       fScintPillars.push_back(new G4PVPlacement(0, G4ThreeVector(xpos, ypos, zpos), fScintillatorLog, "Scintillator", fWorldLog, false, copyNo, true));

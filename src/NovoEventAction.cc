@@ -224,7 +224,7 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 				sort(timestamps.begin(), timestamps.end());
 				if(pcnumber%2 == 0){
 					// N
-					fTimestampsN = timestamps;
+					fTimestampsN = timestamps;// (N)egative z-axis size
 					analysisManager->FillNtupleDColumn(ntupleNo, 0, photoncount);
 					analysisManager->FillH1(6, photoncount);
 					analysisManager->FillNtupleDColumn(ntupleNo, 2, fTimestampsN[0]);
@@ -239,7 +239,7 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 				}
 				else if(pcnumber%2 != 0){
 					// P
-					fTimestampsP = timestamps;
+					fTimestampsP = timestamps; // (P)ositive z-axis size
 					analysisManager->FillNtupleDColumn(ntupleNo, 1, photoncount);
 					analysisManager->FillH1(7, photoncount);
 					analysisManager->FillNtupleDColumn(ntupleNo, 3, fTimestampsP[0]);
