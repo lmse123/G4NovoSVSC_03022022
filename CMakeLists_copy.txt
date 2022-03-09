@@ -1,10 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 3.8...3.18)
-if(${CMAKE_VERSION} VERSION_LESS 3.12)
-  cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
-endif()
-project(novosvsc_project)
+cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+project(NovoSvsc)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -22,7 +19,7 @@ endif()
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
 #
-#${PROJECT_SOURCE_DIR}="${PROJECT_SOURCE_DIR}"
+#PROJECT_SOURCE_DIR="/Users/lena/geant4/apps/G4NovoSVSC_lena/G4NovoSVSC"
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
@@ -66,6 +63,6 @@ endforeach()
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
 #
-add_custom_target(novosvsc_project DEPENDS novosvsc)
+add_custom_target(NovoSvsc DEPENDS novosvsc)
 # (7)
 #install(TARGETS runverification DESTINATION bin)

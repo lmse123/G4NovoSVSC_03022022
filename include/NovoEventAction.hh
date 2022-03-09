@@ -44,11 +44,11 @@ class NovoEventAction : public G4UserEventAction
 
 
 		inline G4int GetEventID() const {return fEventID;}
-		std::vector<G4double>& GetTimestampsN() {return fTimestampsN;}
-		std::vector<G4double>& GetTimestampsP() {return fTimestampsP;}
-		inline std::vector<G4double> &GetScintHitPosXs(){return fScintHitPosXs; };
-		inline std::vector<G4double> &GetScintHitPosYs(){return fScintHitPosYs; };
-		inline std::vector<G4double> &GetScintHitPosZs(){return fScintHitPosZs; };
+		inline std::vector<G4double>& GetTimestampsN() {return fTimestampsN;}
+		inline std::vector<G4double>& GetTimestampsP() {return fTimestampsP;}
+		inline std::vector<G4double> &GetScintHitPosXs(){return fScintHitPosXs; }
+		inline std::vector<G4double> &GetScintHitPosYs(){return fScintHitPosYs; }
+		inline std::vector<G4double> &GetScintHitPosZs(){return fScintHitPosZs; }
 	private:
 		//~ NovoDetectorConstruction* fDetector;
 		//~ NovoRunAction* fRunAction;
@@ -75,10 +75,6 @@ class NovoEventAction : public G4UserEventAction
 		NovoDetectorConstruction *fDetector;
 		//NovoRunAction* fRunAction;
 
-		//inline std::vector<G4ThreeVector> &GetScintPos(){return fScintPos; }; // vector of scintillation positions.
-
-
-		//std::vector<G4ThreeVector> fScintPos; // array of vectors corresponding to hit coordinates in scintillator (EJ276)
 		std::vector<G4double> fScintHitPosXs; // array of vectors corresponding to hit x-coordinates in scintillator (EJ276)
 		std::vector<G4double> fScintHitPosYs; // array of vectors corresponding to hit x-coordinates in scintillator (EJ276)
 		std::vector<G4double> fScintHitPosZs; // array of vectors corresponding to hit x-coordinates in scintillator (EJ276)

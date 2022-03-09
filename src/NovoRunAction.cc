@@ -105,7 +105,9 @@ NovoRunAction::NovoRunAction(NovoDetectorConstruction* det, NovoEventAction* ev)
 	//TODO:
 	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosXs",fEventAction->GetScintHitPosXs()); // 6
 	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosYs",fEventAction->GetScintHitPosYs()); // 7
-	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosZs",fEventAction->GetScintHitPosZs()); // b
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "ScintHitPosZs",fEventAction->GetScintHitPosZs()); // 8
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "TimestampsVecN", fEventAction->GetTimestampsN()); // 9
+	analysisManager->CreateNtupleDColumn(n_BSGating_tupleNo, "TimestampsVecP", fEventAction->GetTimestampsP()); // 10
 	analysisManager->FinishNtuple(n_BSGating_tupleNo); //?
 }
 

@@ -155,6 +155,8 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 	}
 
 	// Process the event's BS gating hit collection
+	//TODO: clean up. move scint stuff to above if-statement.
+		G4int n_BSGating_tupleNo = 1; // <-- TODO: update if scint ntuples >1.
 	if(bsHC){
 		G4int n_scintHit = scintHC->entries();
 		G4int n_BSGatingHit = bsHC->entries();
@@ -198,7 +200,7 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 		//G4cout << "primary Scint hits: "<<Scint_isPrimary << G4endl;
 		//G4cout << "primary BS hits: "<<BSGating_isPrimary << G4endl;
 
-		G4int n_BSGating_tupleNo = 1; // <-- TODO: update if scint ntuples >1.
+		//G4int n_BSGating_tupleNo = 1; // <-- TODO: update if scint ntuples >1.
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,0,n_scintHit);
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,1,n_BSGatingHit);
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,2,ScintEDep);
@@ -206,7 +208,7 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,4,Scint_isPrimary);
 		analysisManager->FillNtupleDColumn(n_BSGating_tupleNo,5,BSGating_isPrimary);
 		// TODO: scint position. No this is already stored
-		analysisManager->AddNtupleRow(n_BSGating_tupleNo);
+		//analysisManager->AddNtupleRow(n_BSGating_tupleNo);
 	}
 
 	// Process the event's photocathode hit collection
@@ -258,6 +260,8 @@ void NovoEventAction::EndOfEventAction(const G4Event* anEvent)
 	for(G4int i = 0; i < fDetector->GetNScint(); i++){
 		analysisManager->AddNtupleRow(i);
 	}
+
+	analysisManager->AddNtupleRow(n_BSGating_tupleNo);
 }
 
 

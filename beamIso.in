@@ -32,4 +32,4 @@
 /tracking/verbose 0
 
 #Start the run with the specified number of events:
-/run/beamOn 10000 #10^8
+/run/beamOn 1000 #10^8
